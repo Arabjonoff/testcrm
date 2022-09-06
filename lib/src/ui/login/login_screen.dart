@@ -240,7 +240,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               _sendData(
                                   _dbController.text,
                                   _numController.text,
-                                  int.parse(_passwordController.text)
+                              _passwordController.text,
                               );
                             },
                             child: Container(
@@ -268,7 +268,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
   _sendData(
-      String number,db,int password
+      String number,db, password
       ) async {
     Repository _repo = Repository();
     setState(() {

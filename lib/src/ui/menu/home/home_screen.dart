@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:testcrm/src/bloc/home/home_bloc.dart';
 import 'package:testcrm/src/colors/colors.dart';
+import 'package:testcrm/src/model/product_model/products_model.dart';
 import 'package:testcrm/src/ui/detail/detail_screen.dart';
 import 'package:testcrm/src/utils/utils.dart';
 
@@ -11,209 +13,129 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final int _gridCount = 2;
+
+  @override
+  initState() {
+    homeBloc.getAllProducts('002');
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double w = Utils.getWidth(context);
     double h = Utils.getHeight(context);
     return Scaffold(
+      backgroundColor: AppColor.grey,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        elevation: 1,
         backgroundColor: AppColor.grey,
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          elevation: 1,
-          backgroundColor: AppColor.grey,
-          foregroundColor: Colors.black,
-          title: const Text('Baliqchi un yog bazasi'),
-        ),
-        body: Column(
-          children: [
-            SizedBox(
-              height: 16 * w,
-            ),
-            Row(
-              children: [
-                const SizedBox(
-                  width: 16,
-                ),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return const DetailScreen();
-                          },
+        foregroundColor: Colors.black,
+        title: const Text('Baliqchi un yog bazasi'),
+      ),
+      body: StreamBuilder<ProductsModel>(
+          stream: homeBloc.getProducts,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              List<Datum> data = snapshot.data!.data;
+              return ListView.builder(
+                  itemCount: (data.length + _gridCount - 1) ~/ _gridCount,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        SizedBox(
+                          height: 16 * w,
                         ),
-                      );
-                    },
-                    child: Container(
-                      height: 150,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.symmetric(vertical: 15 * w),
-                            width: 100 * w,
-                            child: Image.asset(
-                              'assets/icons/product.png',
-                              color: AppColor.green,
+                        Row(
+                          children: [
+                            const SizedBox(
+                              width: 16,
                             ),
-                          ),
-                          Text(
-                            'Mahsulot turlari',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 18 * w),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 16,
-                ),
-                Expanded(
-                  child: Container(
-                    height: 150,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                    ),
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.symmetric(vertical: 15 * w),
-                          width: 100 * w,
-                          child: Image.asset(
-                            'assets/icons/fruit.png',
-                            color: Colors.indigo,
-                          ),
-                        ),
-                        Text(
-                          'Mevalar',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 18 * w),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 16,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 16 * w,
-            ),
-            Row(
-              children: [
-                const SizedBox(
-                  width: 16,
-                ),
-                Expanded(
-                  child: Container(
-                    height: 150,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                    ),
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.symmetric(vertical: 15 * w),
-                          width: 100 * w,
-                          child: Image.asset(
-                            'assets/icons/vegetables.png',
-                            color: Colors.indigo,
-                          ),
-                        ),
-                        Text(
-                          'Poliz ekinlari',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 18 * w),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return const DetailScreen();
+                                      },
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  height: 150,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.white,
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.symmetric(
+                                            vertical: 15 * w),
+                                        width: 100 * w,
+                                        child: Image.asset(
+                                          'assets/icons/logo.png',
+                                        ),
+                                      ),
+                                      Text(
+                                        data[index * _gridCount].name,
+                                        style: TextStyle(
+                                            color: AppColor.green,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 18 * w),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 16,
+                            ),
+                            Expanded(
+                              child: index * _gridCount + 1 >= data.length
+                                  ? Container()
+                                  : Container(
+                                      height: 150,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.white,
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.symmetric(
+                                                vertical: 15 * w),
+                                            width: 100 * w,
+                                            child: Image.asset(
+                                              'assets/icons/logo.png',
+                                            ),
+                                          ),
+                                          Text(
+                                            data[index * _gridCount + 1].name,
+                                            style: TextStyle(
+                                                color: AppColor.green,
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 18 * w),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                            ),
+                            const SizedBox(
+                              width: 16,
+                            ),
+                          ],
                         ),
                       ],
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 16,
-                ),
-                Expanded(
-                  child: Container(
-                    height: 150,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                    ),
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.symmetric(vertical: 15 * w),
-                          width: 100 * w,
-                          child: Image.asset(
-                            'assets/icons/parfumer.png',
-                            color: Colors.indigo,
-                          ),
-                        ),
-                        Text(
-                          'Parfumeriya',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 18 * w),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  width: 16,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 16 * w,
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width / 2,
-              height: 150,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 15 * w),
-                    width: 100 * w,
-                    child: Image.asset(
-                      'assets/icons/textile1.png',
-                      color: Colors.indigo,
-                    ),
-                  ),
-                  Text(
-                    'Tirkataj',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 18 * w),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        )
+                    );
+                  });
+            }
+            return const Center(child: CircularProgressIndicator(color: AppColor.green,));
+          }),
     );
   }
 }
