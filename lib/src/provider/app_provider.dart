@@ -32,4 +32,9 @@ class AppProvider {
       );
     }
   }
+
+  Future<HttpResult> login(String db,number,int password)async{
+    String url = '${baseUrl}login_tr3?DB=$db&username=$number&pass=$password&';
+    return await _getRequest(url);
+  }
 }
