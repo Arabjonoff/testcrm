@@ -32,7 +32,7 @@ class _MainScreenState extends State<MainScreen> {
                   setState(() {});
                 },
                 currentIndex: _selectedIndex,
-                selectedItemColor: Colors.indigo,
+                selectedItemColor: AppColor.green,
                 backgroundColor: AppColor.grey,
                 type: BottomNavigationBarType.fixed,
                 selectedFontSize: 13,

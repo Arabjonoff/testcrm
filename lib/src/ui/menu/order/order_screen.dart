@@ -56,7 +56,7 @@ class _OrderScreenState extends State<OrderScreen>
                   borderRadius: BorderRadius.circular(
                     10.0,
                   ),
-                  color: Colors.indigo,
+                  color: AppColor.green,
                 ),
                 labelColor: Colors.white,
                 unselectedLabelColor: Colors.black,

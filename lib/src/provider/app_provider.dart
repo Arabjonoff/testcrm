@@ -18,11 +18,7 @@ class AppProvider {
       return HttpResult(
         isSuccess: true,
         statusCode: response.statusCode,
-        result: json.decode(
-          utf8.decode(
-            response.bodyBytes,
-          ),
-        ),
+        result: response.body
       );
     } else {
       return HttpResult(

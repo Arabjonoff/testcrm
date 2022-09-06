@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+LoginModel productsFromJson(String str) => LoginModel.fromJson(json.decode(str));
+
 class LoginModel {
   LoginModel({
     required this.status,

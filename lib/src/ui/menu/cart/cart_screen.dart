@@ -46,12 +46,12 @@ class _CartScreenState extends State<CartScreen> {
                         children: [
                           const Text('Futbolka Polo',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500),),
                           const Spacer(),
-                          IconButton(onPressed: (){}, icon: Icon(Icons.delete))
+                          IconButton(onPressed: (){}, icon: const Icon(Icons.delete_forever_outlined,color: AppColor.orange,))
                         ],
                       ),
                       Row(
                         children: [
-                          const Text('134 000 so\'m',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Colors.indigo),),
+                          const Text('134 000 so\'m',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: AppColor.orange),),
                           const Spacer(),
                           Container(
                             width: 120,
@@ -59,11 +59,11 @@ class _CartScreenState extends State<CartScreen> {
                             child: Row(
                               children: [
                                 Expanded(child: Container(
-                                    color: Colors.indigo,
+                                    color: AppColor.green,
                                     child: const Icon(Icons.remove,color: AppColor.white,)),),
                                 const Expanded(child: Center(child: Text('122'))),
                                 Expanded(child: Container(
-                                    color: Colors.indigo,
+                                    color: AppColor.green,
                                     child: Icon(Icons.add,color: AppColor.white,)),),
                               ],
                             ),
@@ -88,7 +88,7 @@ class _CartScreenState extends State<CartScreen> {
                     SizedBox(width: 16,),
                     Text('Umumiy narxi',style: TextStyle(fontWeight: FontWeight.w700,fontSize: 16),),
                     Spacer(),
-                    Text('131 000 so\'m',style: TextStyle(fontWeight: FontWeight.w700,fontSize: 16),),
+                    Text('131 000 so\'m',style: TextStyle(fontWeight: FontWeight.w700,fontSize: 16,color: AppColor.orange),),
                     SizedBox(width: 16,),
                   ],
                 ),
@@ -98,7 +98,7 @@ class _CartScreenState extends State<CartScreen> {
                     SizedBox(width: 16,),
                     Text('Tovalar soni',style: TextStyle(fontWeight: FontWeight.w700,fontSize: 16),),
                     Spacer(),
-                    Text('9 dona',style: TextStyle(fontWeight: FontWeight.w700,fontSize: 16),),
+                    Text('9 dona',style: TextStyle(fontWeight: FontWeight.w700,fontSize: 16,color: AppColor.orange),),
                     SizedBox(width: 16,),
                   ],
                 ),
@@ -108,9 +108,9 @@ class _CartScreenState extends State<CartScreen> {
                   height: 57,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Colors.indigo,
+                    color: AppColor.green,
                   ),
-                  child: const Center(child: Text('Serverga yuborish',style: TextStyle(color: AppColor.white,fontSize: 18,fontWeight: FontWeight.w700),)),
+                  child: const Center(child: Text('Buyurtma berish',style: TextStyle(color: AppColor.white,fontSize: 18,fontWeight: FontWeight.w700),)),
                 )
               ],
             ),
