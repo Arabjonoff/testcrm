@@ -10,6 +10,9 @@ class AppProvider {
     http.Response response = await http.get(
       Uri.parse(url),
     );
+    print(url);
+    print(response.body);
+    print(response.statusCode);
     return _result(response);
   }
 
@@ -36,6 +39,10 @@ class AppProvider {
 
   Future<HttpResult> getProducts(String db) async {
     String url = '${baseUrl}tip?DB=$db';
+    return await _getRequest(url);
+  }
+  Future<HttpResult> getCourse(String db) async {
+    String url = '${baseUrl}getkurs?DB=$db';
     return await _getRequest(url);
   }
 }

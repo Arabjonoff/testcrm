@@ -6,7 +6,7 @@ class ShowDialog{
       String msg
       ){
     showDialog(context: context, builder: (context){
-      return Column(
+      return Scaffold(body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
@@ -34,7 +34,7 @@ class ShowDialog{
                   ),
                   TextButton(
                     onPressed: () {
-                     Navigator.pop(context);
+                      Navigator.pop(context);
                     },
                     child: const Text(
                       'ok',
@@ -47,7 +47,8 @@ class ShowDialog{
             ),
           ),
         ],
-      );
+      ),
+      backgroundColor: Colors.transparent,);
     });
   }
 }

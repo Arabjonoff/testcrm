@@ -35,7 +35,7 @@ class _CartScreenState extends State<CartScreen> {
                     padding: const EdgeInsets.all(5),
                     width: 90,
                     child: Image.asset(
-                      'assets/icons/product.png',
+                      'assets/icons/logo.png',
                     ),
                   ),
                   const SizedBox(width: 8,),

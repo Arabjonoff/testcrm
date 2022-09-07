@@ -134,7 +134,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   });
             }
-            return const Center(child: CircularProgressIndicator(color: AppColor.green,));
+            return  Stack(
+              children: [
+                Center(child: Image.asset('assets/icons/logo.png',width: 30,),),
+            const Center(child: CircularProgressIndicator(color: AppColor.green,strokeWidth: 2,),),
+              ],
+            );
           }),
     );
   }

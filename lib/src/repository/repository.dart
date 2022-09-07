@@ -8,4 +8,6 @@ class Repository{
   Future<HttpResult> login(String db,number,password) => _provider.login(db, number, password);
 
   Future<HttpResult> getProducts(String db) => _provider.getProducts(db);
+
+  Future<HttpResult> getCourse(String db) => _provider.getCourse(db);
 }
