@@ -1,9 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testcrm/src/bloc/ustd_course/usdt_course.dart';
 import 'package:testcrm/src/colors/colors.dart';
 import 'package:http/http.dart' as http;
+import 'package:testcrm/src/dialog/dialog.dart';
+import 'package:testcrm/src/model/control/control.dart';
 import 'package:testcrm/src/model/usd_course/usd.dart';
 import '../../../utils/utils.dart';
 
@@ -16,9 +19,11 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   int debt = 0;
+  String? name;
   @override
   initState(){
     _getData();
+    names;
     courseBloc.getAllUsd('002');
     super.initState();
   }
@@ -41,22 +46,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   Center(
                     child: Container(
+                      width: 70,
+                      height: 70,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
+                          borderRadius: BorderRadius.circular(90),
                           color: AppColor.grey),
-                      child: Padding(
-                        padding: EdgeInsets.all(22.0 * w),
-                        child: Icon(
-                          Icons.question_mark,
-                          size: 44 * w,
-                        ),
-                      ),
+                      child: Center(child: Text(name.toString()[0],style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)),
                     ),
                   ),
                   const SizedBox(
                     height: 8,
                   ),
-                  const Text('Test uchun'),
+                   Text(Control.control[0]['name']),
                   const SizedBox(
                     height: 8,
                   ),
@@ -123,22 +124,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
             ),
-            Container(
-              decoration: BoxDecoration(
-                  color: AppColor.white,
-                  border: Border(
-                    bottom:
-                    BorderSide(width: 1.1 * w, color: AppColor.grey),
-                  )),
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(16.0 * w),
-                    child: Icon(Icons.logout_rounded),
-                  ),
-                  Text('Chiqish')
-                ],
+            GestureDetector(
+              onTap: (){
+                ShowDialog.showLogoutDialog(context, 'Siz haqiqatdan ham tizimdan chiqmoqchimisz ');
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                    color: AppColor.white,
+                    border: Border(
+                      bottom:
+                      BorderSide(width: 1.1 * w, color: AppColor.grey),
+                    )),
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(16.0 * w),
+                      child: Icon(Icons.logout_rounded),
+                    ),
+                    Text('Chiqish')
+                  ],
+                ),
               ),
             ),
           ],
@@ -155,4 +161,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     valueMap['KARZI'] = debt;
     print(valueMap);
   }
+  Future names() async{
+    final prefs = await SharedPreferences.getInstance();
+    name = prefs.getString('name')!;
+    print(name);
+}
 }

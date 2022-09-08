@@ -45,4 +45,8 @@ class AppProvider {
     String url = '${baseUrl}getkurs?DB=$db';
     return await _getRequest(url);
   }
+  Future<HttpResult> getDetailProduct(String db,year,month ,int skl,id) async {
+    String url = '${baseUrl}sklad01?DB=$db&YIL=$year&OY=$month&ID_SKL0=$skl&ID_TIP=$id';
+    return await _getRequest(url);
+  }
 }

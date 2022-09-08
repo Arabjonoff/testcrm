@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testcrm/src/colors/colors.dart';
 import 'package:testcrm/src/dialog/dialog.dart';
+import 'package:testcrm/src/model/control/control.dart';
 import 'package:testcrm/src/model/http_result.dart';
 import 'package:testcrm/src/model/login/login_model.dart';
 import 'package:testcrm/src/repository/repository.dart';
@@ -40,10 +42,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _dbController,
                 decoration:  InputDecoration(
                   labelStyle: const TextStyle(color: Colors.grey),
-                  enabledBorder:  const OutlineInputBorder(
+                  enabledBorder:   OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
                     borderSide:  BorderSide(color: Colors.grey ),
                   ),
-                  focusedBorder:  const OutlineInputBorder(
+                  focusedBorder:   OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
                     borderSide:  BorderSide(color: AppColor.green ),
                   ),
                   hintText: 'Baza raqamini kiriting',
@@ -66,10 +70,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _numController,
                 decoration:  InputDecoration(
                   labelStyle: const TextStyle(color: Colors.grey),
-                  enabledBorder:  const OutlineInputBorder(
+                  enabledBorder:   OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
                     borderSide:  BorderSide(color: Colors.grey ),
                   ),
-                  focusedBorder:  const OutlineInputBorder(
+                  focusedBorder:   OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
                     borderSide:  BorderSide(color: AppColor.green ),
                   ),
                   hintText: 'Telefon raqamni kiriting ',
@@ -91,11 +97,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _passwordController,
                 decoration:   InputDecoration(
                   labelStyle: const TextStyle(color: Colors.grey),
-                  enabledBorder:  const OutlineInputBorder(
+                  enabledBorder:   OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
                     borderSide:  BorderSide(color: Colors.grey ),
                   ),
-                  focusedBorder:  const OutlineInputBorder(
-                    borderSide:  BorderSide(color: AppColor.green ),
+                  focusedBorder:   OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide:  BorderSide(color: AppColor.green),
                   ),
                   hintText: 'Parolni kiriting',
                   labelText: 'parol',
@@ -120,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: MediaQuery.of(context).size.width,
                 height: 57,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius: BorderRadius.circular(10),
                     color: AppColor.green
                 ),
                 child:  Center(
@@ -159,6 +167,15 @@ class _LoginScreenState extends State<LoginScreen> {
       var result = LoginModel.fromJson(response.result);
       // ignore: unrelated_type_equality_checks
       if(result.status == true){
+         final prefs = await SharedPreferences.getInstance();
+         await prefs.setString('token', result.jwt);
+         await prefs.setInt('D1', result.d1);
+         await prefs.setInt('D2', result.d2);
+         await prefs.setInt('D3', result.d3);
+         await prefs.setInt('D4', result.d4);
+         await prefs.setString('name', result.name);
+         await prefs.setString('idT', result.idT);
+         await prefs.setString('db', _dbController.text);
         // ignore: use_build_context_synchronously
         Navigator.push(
           context,

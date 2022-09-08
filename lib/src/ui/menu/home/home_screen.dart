@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) {
-                                        return const DetailScreen();
+                                        return  DetailScreen(name: data[index*_gridCount].name, id: data[index*_gridCount].id,);
                                       },
                                     ),
                                   );
@@ -98,32 +98,44 @@ class _HomeScreenState extends State<HomeScreen> {
                             Expanded(
                               child: index * _gridCount + 1 >= data.length
                                   ? Container()
-                                  : Container(
-                                      height: 150,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.white,
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            margin: EdgeInsets.symmetric(
-                                                vertical: 15 * w),
-                                            width: 100 * w,
-                                            child: Image.asset(
-                                              'assets/icons/logo.png',
-                                            ),
-                                          ),
-                                          Text(
-                                            data[index * _gridCount + 1].name,
-                                            style: TextStyle(
-                                                color: AppColor.green,
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 18 * w),
-                                          ),
-                                        ],
-                                      ),
+                                  : GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return  DetailScreen(name: data[index*_gridCount+1].name, id: data[index*_gridCount+1].id,);
+                                      },
                                     ),
+                                  );
+                                },
+                                    child: Container(
+                                        height: 150,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          color: Colors.white,
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              margin: EdgeInsets.symmetric(
+                                                  vertical: 15 * w),
+                                              width: 100 * w,
+                                              child: Image.asset(
+                                                'assets/icons/logo.png',
+                                              ),
+                                            ),
+                                            Text(
+                                              data[index * _gridCount + 1].name,
+                                              style: TextStyle(
+                                                  color: AppColor.green,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: 18 * w),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                  ),
                             ),
                             const SizedBox(
                               width: 16,
