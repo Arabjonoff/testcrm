@@ -24,7 +24,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   initState(){
     _getData();
     names;
-    courseBloc.getAllUsd('002');
+    courseBloc.getAllUsd(Control.control[0]['DB']);
     super.initState();
   }
   @override
@@ -51,7 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(90),
                           color: AppColor.grey),
-                      child: Center(child: Text(name.toString()[0],style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)),
+                      child: Center(child: Text(Control.control[0]['name'][0],style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)),
                     ),
                   ),
                   const SizedBox(

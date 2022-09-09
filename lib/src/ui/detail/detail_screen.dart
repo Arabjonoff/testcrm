@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +29,8 @@ class _DetailScreenState extends State<DetailScreen> {
 
   int count = 0;
   final int _gridCount = 2;
-
+  bool _buttonPressed = false;
+  bool _loopActive = false;
   @override
   Widget build(BuildContext context) {
     double w = Utils.getWidth(context);
@@ -102,98 +105,139 @@ class _DetailScreenState extends State<DetailScreen> {
                                   width: 16 * w,
                                 ),
                                 Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return Container();
-                                          },
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        height: 26 * w,
+                                      ),
+                                      Container(
+                                        width: 180 * w,
+                                        height: 140 * w,
+                                        decoration: BoxDecoration(
+                                          color: AppColor.white,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                         ),
-                                      );
-                                    },
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          height: 26 * w,
-                                        ),
-                                        Container(
-                                          width: 180 * w,
-                                          height: 140 * w,
-                                          decoration: BoxDecoration(
-                                            color: AppColor.white,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          child: Center(
-                                              child: Image.asset(
-                                                  'assets/icons/logo.png')),
-                                        ),
-                                        SizedBox(
-                                          height: 8 * w,
-                                        ),
-                                        SizedBox(
-                                          width: 180 * w,
-                                          child: Text(
-                                            data[index * _gridCount].name,
-                                            style: TextStyle(
-                                              fontSize: 18 * w,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                            maxLines: 1,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 5 * w,
-                                        ),
-                                        Text(
-                                          "Qoldiq: ${data[index * _gridCount].osoni}",
+                                        child: Center(
+                                            child: Image.asset(
+                                                'assets/icons/logo.png')),
+                                      ),
+                                      SizedBox(
+                                        height: 8 * w,
+                                      ),
+                                      SizedBox(
+                                        width: 180 * w,
+                                        child: Text(
+                                          data[index * _gridCount].name,
                                           style: TextStyle(
-                                            color: Colors.black,
                                             fontSize: 18 * w,
                                             fontWeight: FontWeight.w500,
                                           ),
+                                          maxLines: 1,
                                         ),
-                                        SizedBox(
-                                          height: 5 * w,
+                                      ),
+                                      SizedBox(
+                                        height: 5 * w,
+                                      ),
+                                      Text(
+                                        "Qoldiq: ${data[index * _gridCount].osoni}",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18 * w,
+                                          fontWeight: FontWeight.w500,
                                         ),
-                                        Text(
-                                          "Narxi: ${data[index * _gridCount].narhi.toInt()} UZS",
-                                          style: TextStyle(
-                                            color: AppColor.orange,
-                                            fontSize: 18 * w,
-                                            fontWeight: FontWeight.w500,
-                                          ),
+                                      ),
+                                      SizedBox(
+                                        height: 5 * w,
+                                      ),
+                                      Text(
+                                        "Narxi: ${data[index * _gridCount].narhi.toInt()} UZS",
+                                        style: TextStyle(
+                                          color: AppColor.orange,
+                                          fontSize: 18 * w,
+                                          fontWeight: FontWeight.w500,
                                         ),
-                                        SizedBox(
-                                          height: 8 * w,
-                                        ),
-                                        SizedBox(
-                                          height: 10 * w,
-                                        ),
-                                        Container(
-                                          width:
-                                              MediaQuery.of(context).size.width,
+                                      ),
+                                      SizedBox(
+                                        height: 8 * w,
+                                      ),
+                                      SizedBox(
+                                        height: 10 * w,
+                                      ),
+                                      count == 0?GestureDetector(
+                                        child: Container(
+                                          width: MediaQuery.of(context)
+                                              .size
+                                              .width,
                                           height: 40 * w,
                                           decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(10),
+                                              BorderRadius.circular(
+                                                  10),
                                               color: AppColor.green),
                                           child: Center(
                                             child: Text(
                                               'Savatga olish',
                                               style: TextStyle(
                                                   color: AppColor.white,
-                                                  fontWeight: FontWeight.w500,
+                                                  fontWeight:
+                                                  FontWeight.w500,
                                                   fontSize: 17 * w),
                                             ),
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                      ):Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Listener(
+                                                onPointerDown: (details) {
+                                                  _buttonPressed = true;
+                                                  _increaseCounterWhilePressedRemove();
+                                                },
+                                                onPointerUp: (details) {
+                                                  _buttonPressed = false;
+                                                },
+                                                child: Container(
+                                                  height: 40*w,
+                                                  decoration: BoxDecoration(
+                                                    color: AppColor.green,
+                                                    borderRadius: BorderRadius.circular(10),
+                                                  ),
+                                                  child:  const Icon(Icons.remove,color: AppColor.white,),
+                                                ),
+                                              ),
+                                            ),
+                                            const Spacer(),
+                                            Expanded(child: Center(child: Text(count.toString(),style: const TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),),),
+                                            const Spacer(),
+                                            Expanded(
+                                              child: Listener(
+                                                onPointerDown: (details) {
+                                                  _buttonPressed = true;
+                                                  _increaseCounterWhilePressed();
+                                                },
+                                                onPointerUp: (details) {
+                                                  _buttonPressed = false;
+                                                },
+                                                child: Container(
+                                                  height: 40*w,
+                                                  decoration: BoxDecoration(
+                                                    color: AppColor.green,
+                                                    borderRadius: BorderRadius.circular(10),
+                                                  ),
+                                                  child:  const Icon(Icons.add,color: AppColor.white,),
+                                                ),
+                                              ),
+                                            ),
+
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 SizedBox(
@@ -202,148 +246,146 @@ class _DetailScreenState extends State<DetailScreen> {
                                 Expanded(
                                   child: index * _gridCount + 1 >= data.length
                                       ? Container()
-                                      : GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) {
-                                                  return Container();
-                                                },
-                                              ),
-                                            );
-                                          },
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                height: 26 * w,
-                                              ),
-                                              Container(
-                                                width: 180 * w,
-                                                height: 140 * w,
-                                                decoration: BoxDecoration(
-                                                  color: AppColor.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                child: Center(
-                                                    child: Image.asset(
-                                                        'assets/icons/logo.png')),
-                                              ),
-                                              SizedBox(
-                                                height: 8 * w,
-                                              ),
-                                              SizedBox(
-                                                width: 180 * w,
-                                                child: Text(
-                                                  data[index * _gridCount + 1]
-                                                      .name,
-                                                  style: TextStyle(
-                                                    fontSize: 18 * w,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                  maxLines: 1,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 5 * w,
-                                              ),
-                                              Text(
-                                                "Qoldiq: ${data[index * _gridCount + 1].osoni}",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 18 * w,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 5 * w,
-                                              ),
-                                              Text(
-                                                "Narxi: ${data[index * _gridCount + 1].narhi.toInt()} UZS",
-                                                style: TextStyle(
-                                                  color: AppColor.orange,
-                                                  fontSize: 18 * w,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 8 * w,
-                                              ),
-                                              SizedBox(
-                                                height: 10 * w,
-                                              ),
-                                              count == 0?GestureDetector(
-                                                onTap: (){
-                                                  setState((){
-                                                    count++;
-                                                  });
-                                                },
-                                                child: Container(
-                                                  width: MediaQuery.of(context)
-                                                      .size
-                                                      .width,
-                                                  height: 40 * w,
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      color: AppColor.green),
-                                                  child: Center(
-                                                    child: Text(
-                                                      'Savatga olish',
-                                                      style: TextStyle(
-                                                          color: AppColor.white,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: 17 * w),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ):Container(
-                                                width: MediaQuery.of(context).size.width,
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: Container(
-                                                        height: 40*w,
-                                                        decoration: BoxDecoration(
-                                                          color: AppColor.green,
-                                                          borderRadius: BorderRadius.circular(10),
-                                                        ),
-                                                        child: IconButton(onPressed: (){
-                                                          setState((){
-                                                            count--;
-                                                          });
-                                                        },icon: const Icon(Icons.remove,color: AppColor.white,),padding: EdgeInsets.zero,),
-                                                      ),
-                                                    ),
-                                                    const Spacer(),
-                                                    Expanded(child: Center(child: Text(count.toString(),style: const TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),),),
-                                                    const Spacer(),
-                                                    Expanded(
-                                                      child: Container(
-                                                        height: 40*w,
-                                                        decoration: BoxDecoration(
-                                                          color: AppColor.green,
-                                                          borderRadius: BorderRadius.circular(10),
-                                                        ),
-                                                        child: IconButton(onPressed: (){
-                                                          setState((){
-                                                            count++;
-                                                          });
-                                                        },icon: const Icon(Icons.add,color: AppColor.white,),padding: EdgeInsets.zero,),
-                                                      ),
-                                                    ),
-
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
+                                      : Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            height: 26 * w,
                                           ),
-                                        ),
+                                          Container(
+                                            width: 180 * w,
+                                            height: 140 * w,
+                                            decoration: BoxDecoration(
+                                              color: AppColor.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Center(
+                                                child: Image.network(
+                                                    'https://naqshsoft.site/images/phpqPLebH')),
+                                          ),
+                                          SizedBox(
+                                            height: 8 * w,
+                                          ),
+                                          SizedBox(
+                                            width: 180 * w,
+                                            child: Text(
+                                              data[index * _gridCount + 1]
+                                                  .name,
+                                              style: TextStyle(
+                                                fontSize: 18 * w,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                              maxLines: 1,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 5 * w,
+                                          ),
+                                          Text(
+                                            "Qoldiq: ${data[index * _gridCount + 1].osoni}",
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 18 * w,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 5 * w,
+                                          ),
+                                          Text(
+                                            "Narxi: ${data[index * _gridCount + 1].narhi.toInt()} UZS",
+                                            style: TextStyle(
+                                              color: AppColor.orange,
+                                              fontSize: 18 * w,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 8 * w,
+                                          ),
+                                          SizedBox(
+                                            height: 10 * w,
+                                          ),
+                                          count == 0?GestureDetector(
+                                            onTap: (){
+                                              setState((){
+                                                count++;
+                                              });
+                                            },
+                                            child: Container(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              height: 40 * w,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10),
+                                                  color: AppColor.green),
+                                              child: Center(
+                                                child: Text(
+                                                  'Savatga olish',
+                                                  style: TextStyle(
+                                                      color: AppColor.white,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontSize: 17 * w),
+                                                ),
+                                              ),
+                                            ),
+                                          ):Container(
+                                            width: MediaQuery.of(context).size.width,
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Listener(
+                                                    onPointerDown: (details) {
+                                                      _buttonPressed = true;
+                                                      _increaseCounterWhilePressedRemove();
+                                                    },
+                                                    onPointerUp: (details) {
+                                                      _buttonPressed = false;
+                                                    },
+                                                    child: Container(
+                                                      height: 40*w,
+                                                      decoration: BoxDecoration(
+                                                        color: AppColor.green,
+                                                        borderRadius: BorderRadius.circular(10),
+                                                      ),
+                                                      child:  const Icon(Icons.remove,color: AppColor.white,),
+                                                    ),
+                                                  ),
+                                                ),
+                                                const Spacer(),
+                                                Expanded(child: Center(child: Text(count.toString(),style: const TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),),),
+                                                const Spacer(),
+                                                Expanded(
+                                                  child: Listener(
+                                                    onPointerDown: (details) {
+                                                      _buttonPressed = true;
+                                                      _increaseCounterWhilePressed();
+                                                    },
+                                                    onPointerUp: (details) {
+                                                      _buttonPressed = false;
+                                                    },
+                                                    child: Container(
+                                                      height: 40*w,
+                                                      decoration: BoxDecoration(
+                                                        color: AppColor.green,
+                                                        borderRadius: BorderRadius.circular(10),
+                                                      ),
+                                                      child:  const Icon(Icons.add,color: AppColor.white,),
+                                                    ),
+                                                  ),
+                                                ),
+
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                 ),
                                 const SizedBox(
                                   width: 16,
@@ -373,5 +415,53 @@ class _DetailScreenState extends State<DetailScreen> {
             );
           }),
     );
+  }
+
+  void _increaseCounterWhilePressed() async {
+
+    if (_loopActive) return;// check if loop is active
+
+    _loopActive = true;
+
+    while (_buttonPressed) {
+      // do your thing
+      setState(() {
+        count++;
+      });
+
+      // wait a second
+      await Future.delayed(const Duration(milliseconds: 150));
+    }
+    while (_buttonPressed) {
+      // do your thing
+      setState(() {
+        count--;
+      });
+
+      // wait a second
+      await Future.delayed(const Duration(milliseconds: 150));
+    }
+
+    _loopActive = false;
+  }
+  void _increaseCounterWhilePressedRemove() async {
+
+    if (_loopActive) return;// check if loop is active
+
+    _loopActive = true;
+    if(count >=1){
+      while (_buttonPressed) {
+        // do your thing
+        setState(() {
+          count--;
+        });
+
+        // wait a second
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
+    }
+
+
+    _loopActive = false;
   }
 }

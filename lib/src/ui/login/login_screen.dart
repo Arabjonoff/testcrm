@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -166,18 +168,20 @@ class _LoginScreenState extends State<LoginScreen> {
       });
       var result = LoginModel.fromJson(response.result);
       // ignore: unrelated_type_equality_checks
-      if(result.status == true){
-         final prefs = await SharedPreferences.getInstance();
-         await prefs.setString('token', result.jwt);
-         await prefs.setInt('D1', result.d1);
-         await prefs.setInt('D2', result.d2);
-         await prefs.setInt('D3', result.d3);
-         await prefs.setInt('D4', result.d4);
-         await prefs.setString('name', result.name);
-         await prefs.setString('idT', result.idT);
-         await prefs.setString('db', _dbController.text);
-        // ignore: use_build_context_synchronously
-        Navigator.push(
+      if(result.status == true && result.d1 == 1){
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token',result.jwt);
+        await prefs.setString('password',_passwordController.text);
+        await prefs.setString('username',_numController.text);
+        await prefs.setString('db',_dbController.text);
+        Control.control[0]['D2'] = result.d2;
+        Control.control[0]['D3'] = result.d3;
+        Control.control[0]['D4'] = result.d4;
+        Control.control[0]['name'] = result.name;
+        Control.control[0]['DB'] = _dbController.text;
+        Control.control[0]['ID_T'] = result.idT;
+        Navigator.popUntil(context, (route) => route.isFirst);
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) {
@@ -190,7 +194,6 @@ class _LoginScreenState extends State<LoginScreen> {
         });
       }
       else{
-        // ignore: use_build_context_synchronously
         ShowDialog.showMessageDialog(context, result.message);
         setState(() {
           _loading = false;
