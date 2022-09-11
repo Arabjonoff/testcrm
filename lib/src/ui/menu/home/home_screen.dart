@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,11 +19,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final int _gridCount = 2;
+  late final String _db;
 final Repository _repository = Repository();
   @override
   initState() {
     resendApi();
-    homeBloc.getAllProducts(Control.control[0]['DB'].toString());
     super.initState();
   }
 
@@ -58,46 +59,48 @@ final Repository _repository = Repository();
                               width: 16,
                             ),
                             Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return  DetailScreen(name: data[index*_gridCount].name, id: data[index*_gridCount].id,);
-                                      },
+                              child: FadeInRight(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return  DetailScreen(name: data[index*_gridCount].name, id: data[index*_gridCount].id,);
+                                        },
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    height: 150,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.white,
                                     ),
-                                  );
-                                },
-                                child: Container(
-                                  height: 150,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white,
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        height: 90,
-                                        margin: EdgeInsets.symmetric(
-                                            vertical: 15 * w),
-                                        width: 100 * w,
-                                        child:
-                                        CachedNetworkImage(
-                                          imageUrl:  'https://naqshsoft.site/images/tip/${Control.control[0]['DB']}/tp${data[index*_gridCount].id}.png',
-                                          placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-                                          errorWidget: (context, url, error) => Image.asset('assets/icons/logo.png',color: Colors.black54,),
-                                        ),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          height: 90,
+                                          margin: EdgeInsets.symmetric(
+                                              vertical: 15 * w),
+                                          width: 100 * w,
+                                          child:
+                                          CachedNetworkImage(
+                                            imageUrl:  'https://naqshsoft.site/images/tip/$_db/tp${data[index*_gridCount].id}.png',
+                                            placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                                            errorWidget: (context, url, error) => const Icon(Icons.error)
+                                          ),
 
-                                      ),
-                                      Text(
-                                        data[index * _gridCount].name,
-                                        style: TextStyle(
-                                            color: AppColor.green,
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 18 * w),
-                                      ),
-                                    ],
+                                        ),
+                                        Text(
+                                          data[index * _gridCount].name,
+                                          style: TextStyle(
+                                              color: AppColor.green,
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 18 * w),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -108,46 +111,48 @@ final Repository _repository = Repository();
                             Expanded(
                               child: index * _gridCount + 1 >= data.length
                                   ? Container()
-                                  : GestureDetector(
+                                  : FadeInRight(
+                                    child: GestureDetector(
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return  DetailScreen(name: data[index*_gridCount+1].name, id: data[index*_gridCount+1].id,);
-                                      },
-                                    ),
-                                  );
-                                },
-                                    child: Container(
-                                        height: 150,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
-                                          color: Colors.white,
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              height: 90,
-                                              margin: EdgeInsets.symmetric(
-                                                  vertical: 15 * w),
-                                              width: 100 * w,
-                                              child: CachedNetworkImage(
-                                                imageUrl:  'https://naqshsoft.site/images/tip/${Control.control[0]['DB']}/tp${data[index*_gridCount+1].id}.png',
-                                                placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-                                                errorWidget: (context, url, error) => Image.asset('assets/icons/logo.png',color: Colors.black54,),
-                                              ),
-                                            ),
-                                            Text(
-                                              data[index * _gridCount + 1].name,
-                                              style: TextStyle(
-                                                  color: AppColor.green,
-                                                  fontWeight: FontWeight.w700,
-                                                  fontSize: 18 * w),
-                                            ),
-                                          ],
-                                        ),
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return  DetailScreen(name: data[index*_gridCount+1].name, id: data[index*_gridCount+1].id,);
+                                        },
                                       ),
+                                    );
+                                },
+                                      child: Container(
+                                          height: 150,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: Colors.white,
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                height: 90,
+                                                margin: EdgeInsets.symmetric(
+                                                    vertical: 15 * w),
+                                                width: 100 * w,
+                                                child: CachedNetworkImage(
+                                                  imageUrl:  'https://naqshsoft.site/images/tip/$_db/tp${data[index*_gridCount+1].id}.png',
+                                                  placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+                                                    errorWidget: (context, url, error) => const Icon(Icons.error)
+                                                ),
+                                              ),
+                                              Text(
+                                                data[index * _gridCount + 1].name,
+                                                style: TextStyle(
+                                                    color: AppColor.green,
+                                                    fontWeight: FontWeight.w700,
+                                                    fontSize: 18 * w),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                    ),
                                   ),
                             ),
                             const SizedBox(
@@ -157,7 +162,7 @@ final Repository _repository = Repository();
                         ),
                       ],
                     );
-                  });
+                  },);
             }
             return  Stack(
               children: [
@@ -165,7 +170,7 @@ final Repository _repository = Repository();
             const Center(child: CircularProgressIndicator(color: AppColor.green,strokeWidth: 2,),),
               ],
             );
-          }),
+          },),
     );
   }
   resendApi()async{
@@ -173,6 +178,7 @@ final Repository _repository = Repository();
     String db = prefs.getString('db') ??'';
     String number = prefs.getString('username') ??'';
     String password = prefs.getString('password') ??'';
-    _repository.login(db, number, password);
+    homeBloc.getAllProducts(db);
+    _db = db;
   }
 }

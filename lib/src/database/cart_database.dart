@@ -3,6 +3,19 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 class DataBaseCard{
 
+
+
+  final String _columnTable = 'cart_table';
+  final String _columnId = 'id';
+  String columnName = 'name';
+  String columnPrice = 'price';
+  String columnPriceS = 'priceS';
+  String columnCardCount = 'count';
+  String columnYear = 'year';
+  String columnMonth = 'month';
+  String columnIdTip = 'idTip';
+  String columnIdSkl2 = 'idSkl2';
+
   static final DataBaseCard _baseCard = DataBaseCard.internal();
 
   factory DataBaseCard() => _baseCard;

@@ -23,8 +23,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   initState(){
     _getData();
-    names;
-    courseBloc.getAllUsd(Control.control[0]['DB']);
     super.initState();
   }
   @override
@@ -51,7 +49,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(90),
                           color: AppColor.grey),
-                      child: Center(child: Text(Control.control[0]['name'][0],style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)),
+                      child: Center(child: Text(Control.control[0]['name'],style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)),
                     ),
                   ),
                   const SizedBox(
@@ -152,6 +150,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   _getData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String db = prefs.getString('db') ??'';
     String url =
         'https://naqshsoft.site/karzi?DB=002&ID_TOCH=001&YIL=2022&OY=8&TP=0&';
     http.Response response = await http.get(
@@ -160,10 +160,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Map valueMap = json.decode(response.body);
     valueMap['KARZI'] = debt;
     print(valueMap);
+    courseBloc.getAllUsd(db);
+
   }
-  Future names() async{
-    final prefs = await SharedPreferences.getInstance();
-    name = prefs.getString('name')!;
-    print(name);
-}
 }
