@@ -42,7 +42,7 @@ class OrderResult {
   String idToch;
   String izoh;
   DateTime dt;
-  int sm;
+  dynamic sm;
   List<Tzakaz1> tzakaz1;
 
   factory OrderResult.fromJson(Map<String, dynamic> json) => OrderResult(
@@ -79,11 +79,11 @@ class Tzakaz1 {
   });
 
   String name;
-  int idSkl2;
-  int soni;
-  int narhi;
-  int snarh;
-  int sm;
+  dynamic idSkl2;
+  dynamic soni;
+  dynamic narhi;
+  dynamic snarh;
+  dynamic sm;
 
   factory Tzakaz1.fromJson(Map<String, dynamic> json) => Tzakaz1(
     name: json["NAME"]??'',

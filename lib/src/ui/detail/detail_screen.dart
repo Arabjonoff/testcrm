@@ -5,6 +5,7 @@ import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:testcrm/src/bloc/cart_bloc/cart_bloc.dart';
 import 'package:testcrm/src/bloc/product_detail_bloc/product_detail_bloc.dart';
 import 'package:testcrm/src/colors/colors.dart';
 import 'package:testcrm/src/model/product_model/product_detail_model/product_detail.dart';
@@ -26,6 +27,7 @@ class _DetailScreenState extends State<DetailScreen> {
   initState() {
     var format = DateFormat();
     print(format);
+    cartBloc.allCart();
     productDetailBloc.getAllProducts('002', '2022', '9', 1, widget.id);
     super.initState();
   }
@@ -47,28 +49,13 @@ class _DetailScreenState extends State<DetailScreen> {
         foregroundColor: Colors.black,
         title: Text(widget.name),
         actions: [
-          count == 0
-              ? IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const CartScreen();
-                        },
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.shopping_cart),
-                )
-              : Badge(
-                  position: BadgePosition.topEnd(top: 0, end: 5),
-                  animationType: BadgeAnimationType.scale,
-                  badgeContent: Text(
-                    count.toString(),
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  child: IconButton(
+          StreamBuilder<List<DetailResult>>(
+            stream: cartBloc.getCard,
+            builder: (context, snapshot) {
+              if(snapshot.hasData){
+                return Container(
+                  child: snapshot.data!.isEmpty
+                      ? IconButton(
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -80,8 +67,33 @@ class _DetailScreenState extends State<DetailScreen> {
                       );
                     },
                     icon: const Icon(Icons.shopping_cart),
+                  )
+                      : Badge(
+                    position: BadgePosition.topEnd(top: 0, end: 5),
+                    animationType: BadgeAnimationType.scale,
+                    badgeContent: Text(
+                      snapshot.data!.length.toInt().toString(),
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return const CartScreen();
+                            },
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.shopping_cart),
+                    ),
                   ),
-                ),
+                );
+              }
+              return Container();
+            }
+          ),
         ],
       ),
       body: StreamBuilder<ProductDetailModel>(
@@ -159,7 +171,10 @@ class _DetailScreenState extends State<DetailScreen> {
                                         SizedBox(
                                           height: 10 * w,
                                         ),
-                                        count == 0?GestureDetector(
+                                        data[index*_gridCount].count == 0?GestureDetector(
+                                          onTap: (){
+
+                                          },
                                           child: Container(
                                             width: MediaQuery.of(context)
                                                 .size
@@ -193,10 +208,13 @@ class _DetailScreenState extends State<DetailScreen> {
                                                     borderRadius: BorderRadius.circular(10),
                                                   ),
                                                   child: IconButton(onPressed: (){
+                                                    setState((){
+                                                      productDetailBloc.updateCart(data[index*_gridCount], true);
+                                                    });
                                                   },icon:  const Icon(Icons.remove,color: AppColor.white,),padding: EdgeInsets.zero,),                                              ),
                                               ),
                                               const Spacer(),
-                                              Expanded(child: Center(child: Text(count.toString(),style: const TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),),),
+                                              Expanded(child: Center(child: Text(data[index*_gridCount].count.toString(),style: const TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),),),
                                               const Spacer(),
                                               Expanded(
                                                 child: Container(
@@ -206,9 +224,11 @@ class _DetailScreenState extends State<DetailScreen> {
                                                     borderRadius: BorderRadius.circular(10),
                                                   ),
                                                   child: IconButton(onPressed: (){
+                                                    setState((){
+                                                      productDetailBloc.updateCart(data[index*_gridCount], false);
+                                                    });
                                                   },icon:  const Icon(Icons.add,color: AppColor.white,),padding: EdgeInsets.zero,),                                                ),
                                               ),
-
                                             ],
                                           ),
                                         ),
@@ -274,64 +294,63 @@ class _DetailScreenState extends State<DetailScreen> {
                                             SizedBox(
                                               height: 10 * w,
                                             ),
-                                            count == 0?GestureDetector(
-                                              onTap: (){
-                                                setState((){
-                                                  count++;
-                                                });
-                                              },
-                                              child: Container(
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                height: 40 * w,
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    color: AppColor.green),
-                                                child: Center(
-                                                  child: Text(
-                                                    'Savatga olish',
-                                                    style: TextStyle(
-                                                        color: AppColor.white,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontSize: 17 * w),
-                                                  ),
+                                            data[index*_gridCount+1].count > 0?Container(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              height: 40 * w,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10),
+                                                  color: AppColor.green),
+                                              child: Center(
+                                                child: Text(
+                                                  'Savatga olish',
+                                                  style: TextStyle(
+                                                      color: AppColor.white,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontSize: 17 * w),
                                                 ),
                                               ),
-                                            ):Container(
-                                              width: MediaQuery.of(context).size.width,
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Container(
-                                                      height: 40*w,
-                                                      decoration: BoxDecoration(
-                                                        color: AppColor.green,
-                                                        borderRadius: BorderRadius.circular(10),
+                                            ):GestureDetector(
+                                              onTap:(){
+                        productDetailBloc.updateCart(data[index*_gridCount+1], false);
+                        },
+                                              child: SizedBox(
+                                                width: MediaQuery.of(context).size.width,
+                                                child: Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Container(
+                                                        height: 40*w,
+                                                        decoration: BoxDecoration(
+                                                          color: AppColor.green,
+                                                          borderRadius: BorderRadius.circular(10),
+                                                        ),
+                                                        child: IconButton(onPressed: (){
+                                                          productDetailBloc.updateCart(data[index*_gridCount+1], true);
+                                                        },icon:  const Icon(Icons.remove,color: AppColor.white,),padding: EdgeInsets.zero,),
                                                       ),
-                                                      child: IconButton(onPressed: (){
-                                                      },icon:  const Icon(Icons.remove,color: AppColor.white,),padding: EdgeInsets.zero,),
                                                     ),
-                                                  ),
-                                                  const Spacer(),
-                                                  Expanded(child: Center(child: Text(count.toString(),style: const TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),),),
-                                                  const Spacer(),
-                                                  Expanded(
-                                                    child: Container(
-                                                      height: 40*w,
-                                                      decoration: BoxDecoration(
-                                                        color: AppColor.green,
-                                                        borderRadius: BorderRadius.circular(10),
+                                                    const Spacer(),
+                                                    Expanded(child: Center(child: Text(data[index*_gridCount+1].count.toString(),style: const TextStyle(fontSize: 15,fontWeight: FontWeight.w500),),),),
+                                                    const Spacer(),
+                                                    Expanded(
+                                                      child: Container(
+                                                        height: 40*w,
+                                                        decoration: BoxDecoration(
+                                                          color: AppColor.green,
+                                                          borderRadius: BorderRadius.circular(10),
+                                                        ),
+                                                        child: IconButton(onPressed: (){
+                                                          productDetailBloc.updateCart(data[index*_gridCount+1], false);
+                                                        },icon:  const Icon(Icons.add,color: AppColor.white,),padding: EdgeInsets.zero,),
                                                       ),
-                                                      child: IconButton(onPressed: (){
-                                                      },icon:  const Icon(Icons.add,color: AppColor.white,),padding: EdgeInsets.zero,),
                                                     ),
-                                                  ),
-
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ],
@@ -368,51 +387,4 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
-  void _increaseCounterWhilePressed() async {
-
-    if (_loopActive) return;// check if loop is active
-
-    _loopActive = true;
-
-    while (_buttonPressed) {
-      // do your thing
-      setState(() {
-        count++;
-      });
-
-      // wait a second
-      await Future.delayed(const Duration(milliseconds: 150));
-    }
-    while (_buttonPressed) {
-      // do your thing
-      setState(() {
-        count--;
-      });
-
-      // wait a second
-      await Future.delayed(const Duration(milliseconds: 150));
-    }
-
-    _loopActive = false;
-  }
-  void _increaseCounterWhilePressedRemove() async {
-
-    if (_loopActive) return;// check if loop is active
-
-    _loopActive = true;
-    if(count >=1){
-      while (_buttonPressed) {
-        // do your thing
-        setState(() {
-          count--;
-        });
-
-        // wait a second
-        await Future.delayed(const Duration(milliseconds: 100));
-      }
-    }
-
-
-    _loopActive = false;
-  }
 }

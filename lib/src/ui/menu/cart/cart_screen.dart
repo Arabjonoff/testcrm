@@ -1,5 +1,11 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:testcrm/src/bloc/cart_bloc/cart_bloc.dart';
 import 'package:testcrm/src/colors/colors.dart';
+import 'package:testcrm/src/model/http_result.dart';
+import 'package:testcrm/src/model/product_model/product_detail_model/product_detail.dart';
+import 'package:testcrm/src/model/send_order/send_order_model.dart';
+import 'package:testcrm/src/repository/repository.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -9,6 +15,16 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  @override
+  initState() {
+    cartBloc.allCart();
+    super.initState();
+  }
+
+  double prices = 0;
+
+  final Repository _repository = Repository();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,102 +37,272 @@ class _CartScreenState extends State<CartScreen> {
       ),
       body: Column(
         children: [
-          Expanded(child: ListView.builder(
-            itemCount: 9,
-              itemBuilder: (context,index){
-            return Container(
-              width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.symmetric(horizontal: 16,vertical: 8),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10), color: AppColor.white),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(5),
-                    width: 90,
-                    child: Image.asset(
-                      'assets/icons/logo.png',
-                    ),
-                  ),
-                  const SizedBox(width: 8,),
-                  Expanded(child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children:  [
-                      Row(
-                        children: [
-                          const Text('Futbolka Polo',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500),),
-                          const Spacer(),
-                          IconButton(onPressed: (){}, icon: const Icon(Icons.delete_forever_outlined,color: AppColor.orange,))
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Text('134 000 so\'m',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: AppColor.orange),),
-                          const Spacer(),
-                          Container(
-                            width: 120,
-                            color: AppColor.grey,
-                            child: Row(
-                              children: [
-                                Expanded(child: Container(
-                                    color: AppColor.green,
-                                    child: const Icon(Icons.remove,color: AppColor.white,)),),
-                                const Expanded(child: Center(child: Text('122'))),
-                                Expanded(child: Container(
-                                    color: AppColor.green,
-                                    child: Icon(Icons.add,color: AppColor.white,)),),
-                              ],
+          Expanded(
+            child: StreamBuilder<List<DetailResult>>(
+                stream: cartBloc.getCard,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<DetailResult> data = snapshot.data!;
+                    return ListView.builder(
+                        itemCount: data.length,
+                        itemBuilder: (context, index) {
+                          return FadeInRight(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              width: MediaQuery.of(context).size.width,
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: AppColor.white),
+                              child: Row(
+                                children: [
+                                  const SizedBox(
+                                    width: 16,
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              data[index].name,
+                                              style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                            const Spacer(),
+                                            IconButton(
+                                                onPressed: () {
+                                                  cartBloc.deleteProductCard(
+                                                      data[index].id);
+                                                },
+                                                icon: const Icon(
+                                                  Icons.delete_forever_outlined,
+                                                  color: AppColor.orange,
+                                                ))
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              data[index].narhi.toString(),
+                                              style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: AppColor.orange),
+                                            ),
+                                            const Spacer(),
+                                            Container(
+                                              width: 130,
+                                              decoration: BoxDecoration(
+                                                  color: AppColor.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          50)),
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          color: AppColor.green,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      50)),
+                                                      child: const Icon(
+                                                        Icons.remove,
+                                                        color: AppColor.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: Center(
+                                                      child: Text(
+                                                        data[index]
+                                                            .count.toInt().toString(),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        cartBloc.updateCart(
+                                                            data[index], false);
+                                                        setState(() {});
+                                                      },
+                                                      child: Container(
+                                                        decoration: BoxDecoration(
+                                                            color:
+                                                                AppColor.green,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        50)),
+                                                        child: const Icon(
+                                                          Icons.add,
+                                                          color: AppColor.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 8,
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 8,),
-                        ],
-                      )
-                    ],
-                  ),),
-                ],
+                          );
+                        });
+
+          ),
+      Column(
+        children: [
+          const SizedBox(
+            height: 8,
+          ),
+          Row(
+            children: [
+              const SizedBox(
+                width: 16,
               ),
-            );
-          }),),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            color: AppColor.white,
-            child: Column(
-              children: [
-                const SizedBox(height: 8,),
-                Row(
-                  children: const [
-                    SizedBox(width: 16,),
-                    Text('Umumiy narxi',style: TextStyle(fontWeight: FontWeight.w700,fontSize: 16),),
-                    Spacer(),
-                    Text('131 000 so\'m',style: TextStyle(fontWeight: FontWeight.w700,fontSize: 16,color: AppColor.orange),),
-                    SizedBox(width: 16,),
-                  ],
-                ),
-                const SizedBox(height: 8,),
-                Row(
-                  children: const [
-                    SizedBox(width: 16,),
-                    Text('Tovalar soni',style: TextStyle(fontWeight: FontWeight.w700,fontSize: 16),),
-                    Spacer(),
-                    Text('9 dona',style: TextStyle(fontWeight: FontWeight.w700,fontSize: 16,color: AppColor.orange),),
-                    SizedBox(width: 16,),
-                  ],
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16,vertical: 10),
-                  width: MediaQuery.of(context).size.width,
-                  height: 57,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: AppColor.green,
+              const Text(
+                'Umumiy narxi',
+                style: TextStyle(
+                    fontWeight: FontWeight.w700, fontSize: 16),
+              ),
+              const Spacer(),
+              Text(
+                '${price.toInt()} so\'m',
+                style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                    color: AppColor.orange),
+              ),
+              const SizedBox(
+                width: 16,
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          Row(
+            children: [
+              const SizedBox(
+                width: 16,
+              ),
+              const Text(
+                'Tovalar soni',
+                style: TextStyle(
+                    fontWeight: FontWeight.w700, fontSize: 16),
+              ),
+              const Spacer(),
+              Text(
+                '${snapshot.data!.length} dona',
+                style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                    color: AppColor.orange),
+              ),
+              const SizedBox(
+                width: 16,
+              ),
+            ],
+          ),
+          GestureDetector(
+            onTap: () async{
+              List<Tzakaz1> p = [];
+              for (int i = 0; i < 1; i++) {
+                Tzakaz1 tzakaz1 = Tzakaz1(
+                  name: snapshot.data![0].name,
+                  idSkl2: snapshot.data![0].idSkl2,
+                  soni: snapshot.data![0].soni,
+                  narhi: snapshot.data![0].narhi,
+                  snarh: snapshot.data![0].snarhi,
+                  sm: price.toInt(),
+                );
+                p.add(tzakaz1);
+              }
+              OrderModel send = OrderModel(
+                data: [
+                  OrderResult(
+                    id: 0,
+                    name: 'name',
+                    ndoc: 'ndoc',
+                    idToch: '001',
+                    izoh: 'izoh',
+                    dt: DateTime.now(),
+                    sm: price,
+                    tzakaz1: p,
                   ),
-                  child: const Center(child: Text('Buyurtma berish',style: TextStyle(color: AppColor.white,fontSize: 18,fontWeight: FontWeight.w700),)),
-                )
-              ],
+                ],
+              );
+              HttpResult result = await _repository.orderProducts(send);
+            },
+            child: Container(
+              margin: const EdgeInsets.symmetric(
+                  horizontal: 16, vertical: 10),
+              width: MediaQuery.of(context).size.width,
+              height: 57,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: AppColor.green,
+              ),
+              child: const Center(
+                  child: Text(
+                'Buyurtma berish',
+                style: TextStyle(
+                    color: AppColor.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700),
+              )),
             ),
           )
         ],
+      )
+        ],
       ),
     );
+  }
+
+  senData() async {
+    List<Tzakaz1> p = [];
+    for (int i = 0; i < 1; i++) {
+      Tzakaz1 tzakaz1 = Tzakaz1(
+        name: 'name',
+        idSkl2: 1,
+        soni: 2,
+        narhi: 1221,
+        snarh: 11,
+        sm: 111,
+      );
+      p.add(tzakaz1);
+    }
+    OrderModel send = OrderModel(
+      data: [
+        OrderResult(
+          id: 1,
+          name: 'name',
+          ndoc: 'ndoc',
+          idToch: '1',
+          izoh: 'izoh',
+          dt: DateTime.now(),
+          sm: 11,
+          tzakaz1: p,
+        ),
+      ],
+    );
+    HttpResult result = await _repository.orderProducts(send);
   }
 }

@@ -42,6 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 57,
               child: TextField(
                 controller: _dbController,
+                keyboardType: TextInputType.number,
                 decoration:  InputDecoration(
                   labelStyle: const TextStyle(color: Colors.grey),
                   enabledBorder:   OutlineInputBorder(
@@ -68,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
               width: MediaQuery.of(context).size.width,
               height: 57,
               child: TextField(
-
+                keyboardType: TextInputType.number,
                 controller: _numController,
                 decoration:  InputDecoration(
                   labelStyle: const TextStyle(color: Colors.grey),
@@ -96,6 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
               width: MediaQuery.of(context).size.width,
               height: 57,
               child: TextField(
+                keyboardType: TextInputType.number,
                 controller: _passwordController,
                 decoration:   InputDecoration(
                   labelStyle: const TextStyle(color: Colors.grey),
@@ -126,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 );
               },
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16,vertical: 16),
+                margin: const EdgeInsets.only(left: 16,right: 16,top: 16),
                 width: MediaQuery.of(context).size.width,
                 height: 57,
                 decoration: BoxDecoration(

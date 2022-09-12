@@ -18,5 +18,24 @@ class ProductDetailBloc{
       fetchDetailProduct.sink.add(productDetailModel);
     }
   }
+  updateCart(DetailResult detailResult ,bool remove)async{
+    if(remove){
+      detailResult.count--;
+      if(detailResult.count == 0){
+        await _repository.deleteProductCard(detailResult.id);
+      }
+      else{
+        await _repository.updateProduct(detailResult);
+      }
+    }
+    else{
+      detailResult.count++;
+      if(detailResult.count == 1){
+        await _repository.saveProductCard(detailResult);
+      }else{
+        await _repository.saveProductCard(detailResult);
+      }
+    }
+  }
 }
 final productDetailBloc = ProductDetailBloc();
