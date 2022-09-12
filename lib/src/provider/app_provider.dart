@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testcrm/src/model/http_result.dart';
 import 'package:testcrm/src/model/send_order/send_order_model.dart';
 
@@ -11,6 +12,10 @@ class AppProvider {
     http.Response response = await http.post(
       Uri.parse(url),
       body: body,
+      headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+      }
     );
     print(url);
     print(body);
@@ -63,7 +68,10 @@ class AppProvider {
   }
 
   Future<HttpResult> orderProducts(OrderModel order) async {
-    String url = '${baseUrl}zakaz?DB=002&ID_T=001&SANA=2022-09-12&';
+    DateTime dateTime =  DateTime.now();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String db = prefs.getString('db') ??'';
+    String url = '${baseUrl}zakaz?DB=$db&ID_T=001&SANA=$dateTime&';
     return await _postRequest(url,json.encode(order));
   }
 }
