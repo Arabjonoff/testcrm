@@ -4,7 +4,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:testcrm/src/model/product_model/product_detail_model/product_detail.dart';
 class DataBaseCard {
-  final String _columnTable = 'cart_table';
+  final String _columnTable = 'cartTable';
   final String _columnId = 'ID';
   String columnName = 'NAME';
   String columnPrice = 'NARHI';
@@ -35,7 +35,7 @@ class DataBaseCard {
 
   initDb() async {
     String databasesPath = await getDatabasesPath();
-    String path = join(databasesPath, 'soft.db');
+    String path = join(databasesPath, 'naqsh.db');
     var db = await openDatabase(path, version: 1, onCreate: _onCreate);
     return db;
   }
@@ -43,15 +43,15 @@ class DataBaseCard {
   void _onCreate(Database db, int newVersion) async {
     await db.execute(
       'CREATE TABLE $_columnTable('
-      '$_columnId INTEGER PRIMARY KEY, '
-      '$columnName TEXT, '
-      '$columnPrice REAL, '
-      '$columnPriceS REAL, '
-      '$columnPriceSs REAL, '
-      '$columnMoth TEXT, '
-      '$columnYear TEXT, '
-      '$columnIdSkl2 INTEGER, '
-      '$columnIdTip INTEGER, '
+      '$_columnId INTEGER PRIMARY KEY,'
+      '$columnName TEXT,'
+      '$columnPrice REAL,'
+      '$columnPriceS REAL,'
+      '$columnPriceSs REAL,'
+      '$columnMoth TEXT,'
+      '$columnYear TEXT,'
+      '$columnIdSkl2 INTEGER,'
+      '$columnIdTip INTEGER,'
       '$columnCardCount INTEGER)',
     );
   }
@@ -70,7 +70,7 @@ class DataBaseCard {
     var dbClient = await db;
     return await dbClient.update(
       _columnTable,
-      where: "ID = ?",
+      where: "id = ?",
       products.toJson(),
       whereArgs: [products.id],
     );
@@ -80,7 +80,7 @@ class DataBaseCard {
     var dbClient = await db;
     int result = await dbClient.delete(
       _columnTable,
-      where: 'ID = ?',
+      where: 'id = ?',
       whereArgs: [id],
     );
     return result;

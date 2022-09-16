@@ -9,13 +9,11 @@ class AppProvider {
   static String baseUrl = 'https://naqshsoft.site/';
 
   Future<HttpResult> _postRequest(String url, body) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('token')??'';
     http.Response response = await http.post(
       Uri.parse(url),
       body: body,
-      headers: {
-        'Content-type': 'application/json',
-        'Accept': 'application/json',
-      }
     );
     print(url);
     print(body);
@@ -70,8 +68,9 @@ class AppProvider {
   Future<HttpResult> orderProducts(OrderModel order) async {
     DateTime dateTime =  DateTime.now();
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('token')??'';
     String db = prefs.getString('db') ??'';
-    String url = '${baseUrl}zakaz?DB=$db&ID_T=001&SANA=$dateTime&';
+    String url = 'https://naqshsoft.site/tzakaz?DB=$db';
     return await _postRequest(url,json.encode(order));
   }
 }

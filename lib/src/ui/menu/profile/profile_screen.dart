@@ -55,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(
                     height: 8,
                   ),
-                   Text(Control.control[0]['name']),
+                   Text(''),
                   const SizedBox(
                     height: 8,
                   ),

@@ -11,24 +11,28 @@ class CartBloc{
 
   allCart() async {
     List<DetailResult> dataCart = await _repository.getProductCart();
+
     _fetCart.sink.add(dataCart);
   }
-  updateCart(DetailResult productsModel, bool remove) async {
-    if (remove) {
-      if (productsModel.count == 0) {
-
-      } else {
-        await _repository.updateProduct(productsModel);
+  updateCart(DetailResult detailResult ,bool remove)async{
+    if(remove){
+      detailResult.count--;
+      if(detailResult.count == 0){
+        await _repository.deleteProductCard(detailResult.id);
       }
-    } else {
-      productsModel.count;
-      if (productsModel.count == 1) {
-        await _repository.saveProductCard(productsModel);
-      } else {
-        await _repository.updateProduct(productsModel);
+      else{
+        await _repository.updateProduct(detailResult);
       }
     }
-    allCart();
+    else{
+      detailResult.count++;
+      if(detailResult.count == 1){
+        await _repository.saveProductCard(detailResult);
+      }
+      else{
+        await _repository.updateProduct(detailResult);
+      }
+    }
   }
   deleteProductCard(int id) async {
     int k = await _repository.deleteProductCard(id);

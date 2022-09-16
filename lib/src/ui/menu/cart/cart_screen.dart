@@ -98,7 +98,7 @@ class _CartScreenState extends State<CartScreen> {
                                           Row(
                                             children: [
                                               Text(
-                                                data[index].narhi.toString(),
+                                                data[index].snarhi.toString(),
                                                 style: const TextStyle(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w500,
@@ -115,7 +115,7 @@ class _CartScreenState extends State<CartScreen> {
                                                 child: Row(
                                                   children: [
                                                     Expanded(
-                                                      child: Container(
+                                                      child:  data[index].count ==1?Container(
                                                         decoration: BoxDecoration(
                                                             color: AppColor.green,
                                                             borderRadius:
@@ -125,6 +125,23 @@ class _CartScreenState extends State<CartScreen> {
                                                         child: const Icon(
                                                           Icons.remove,
                                                           color: AppColor.white,
+                                                        ),
+                                                      ):GestureDetector(
+                                                        onTap:(){
+                                                          setState((){});
+                                                          cartBloc.updateCart(data[index], true);
+                                                        },
+                                                        child: Container(
+                                                          decoration: BoxDecoration(
+                                                              color: AppColor.green,
+                                                              borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                  50)),
+                                                          child: const Icon(
+                                                            Icons.remove,
+                                                            color: AppColor.white,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
@@ -239,7 +256,7 @@ class _CartScreenState extends State<CartScreen> {
                               Tzakaz1 tzakaz1 = Tzakaz1(
                                 name: data[i].name,
                                 idSkl2: data[i].idSkl2,
-                                soni: data[i].soni,
+                                soni: data[i].count,
                                 narhi: data[i].narhi,
                                 snarh: data[i].snarhi,
                                 sm: price.toInt(),
@@ -247,20 +264,18 @@ class _CartScreenState extends State<CartScreen> {
                               p.add(tzakaz1);
                             }
                             OrderModel send = OrderModel(
-                              data: [
-                                OrderResult(
+
                                   id: 0,
-                                  name: 'name',
-                                  ndoc: 'ndoc',
-                                  idToch: '001',
-                                  izoh: 'izoh',
-                                  dt: DateTime.now(),
-                                  sm: price,
+                                  name: 'Мухаммадсидик ака Бозор-1',
+                                  ndoc: '0',
+                                  idToch: '022',
+                                  izoh: '',
+                                  dt: '',
+                                  sm: price.toInt(),
                                   tzakaz1: p,
-                                ),
-                              ],
                             );
                             HttpResult result = await _repository.orderProducts(send);
+                            print(result.result);
                           },
                           child: Container(
                             margin: const EdgeInsets.symmetric(
@@ -292,33 +307,4 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  senData() async {
-    List<Tzakaz1> p = [];
-    for (int i = 0; i < 1; i++) {
-      Tzakaz1 tzakaz1 = Tzakaz1(
-        name: 'name',
-        idSkl2: 1,
-        soni: 2,
-        narhi: 1221,
-        snarh: 11,
-        sm: 111,
-      );
-      p.add(tzakaz1);
-    }
-    OrderModel send = OrderModel(
-      data: [
-        OrderResult(
-          id: 1,
-          name: 'name',
-          ndoc: 'ndoc',
-          idToch: '1',
-          izoh: 'izoh',
-          dt: DateTime.now(),
-          sm: 11,
-          tzakaz1: p,
-        ),
-      ],
-    );
-    HttpResult result = await _repository.orderProducts(send);
-  }
 }
